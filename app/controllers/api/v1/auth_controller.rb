@@ -8,8 +8,8 @@ class Api::V1::AuthController < ApplicationController
         # encode token comes from ApplicationController
         token = encode_token({ user_id: @user.id })
 
-        auth_token = encode_token({ auth_token: @user.auth_token })
-        render json: { user: UserSerializer.new(@user), jwt: token, monzo_auth_token: auth_token }, status: :accepted
+        # auth_token = encode_token({ auth_token: @user.auth_token })
+        render json: { user: UserSerializer.new(@user), jwt: token }, status: :accepted
       else
         render json: { message: 'Invalid username or password' }, status: :unauthorized
       end

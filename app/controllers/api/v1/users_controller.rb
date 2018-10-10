@@ -1,6 +1,5 @@
 class Api::V1::UsersController < ApplicationController
-
-    skip_before_action :authorized, only: [:index]
+    skip_before_action :authorized, only: [:create]
  
     def index
       @users = User.all
@@ -14,6 +13,15 @@ class Api::V1::UsersController < ApplicationController
         render json: { user: UserSerializer.new(@user), jwt: @token }, status: :created
       else
         render json: { error: 'failed to create user' }, status: :not_acceptable
+      end
+    end
+
+    def validate
+      user = current_user
+      if user
+          render json: {id: user.id, username: user.username}
+      else
+          render json: {error: 'Validation failed.', status: 400}
       end
     end
    
