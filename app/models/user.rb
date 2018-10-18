@@ -21,5 +21,4 @@ class User < ApplicationRecord
         console.log(data)
     end
 
-
 end

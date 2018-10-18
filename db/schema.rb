@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 2018_10_17_171209) do
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
-    t.integer "budget_amount"
+    t.integer "budget_amount", default: 0
     t.string "budget_timeframe"
     t.integer "user_id"
     t.datetime "created_at", null: false

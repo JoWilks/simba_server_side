@@ -7,8 +7,9 @@ Rails.application.routes.draw do
       post '/login', to: 'auth#create'
       post '/register', to: 'users#create'
       
+      get '/categories/:id', to: 'categories#show'
       get '/categories', to: 'categories#index'
-      get '/categories', to: 'categories#show'
+      post '/categories/base', to: 'categories#createbase'
       post '/categories', to: 'categories#create'
       put '/categories', to: 'categories#update'
     end
