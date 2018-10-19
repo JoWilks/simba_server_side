@@ -6,6 +6,9 @@ Rails.application.routes.draw do
       get '/validate', to: 'users#validate'
       post '/login', to: 'auth#create'
       post '/register', to: 'users#create'
+
+      get '/exchange', to: 'users#exchange'
+      # post '/exchange', to: 'users#exchange'
       
       get '/categories/:id', to: 'categories#show'
       get '/categories', to: 'categories#index'

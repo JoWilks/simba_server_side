@@ -25,6 +25,13 @@ class Api::V1::UsersController < ApplicationController
           render json: {error: 'Validation failed.', status: 400}
       end
     end
+
+    def exchange
+      user = current_user
+      response = user.exchange_token
+      byebug
+      render json: {response: response}
+    end
    
     private
    
