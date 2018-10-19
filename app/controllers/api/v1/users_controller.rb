@@ -28,20 +28,24 @@ class Api::V1::UsersController < ApplicationController
 
     def exchange
       user = current_user
-      response = user.exchange_token(token_params)
-      #store access token & refresh token
+      byebug
+      response = user.exchange_token(token_params["auth_token"])
       if response["access_token"]
-        render json: { access_token : response["access_token"]}
+        access_token = JWT.encode(response["access_token"], 'my_s3cr3t')
+        refresh_token = JWT.encode(response["refresh_token"], 'my_s3cr3t')
+        user.update( access_token: access_token, refresh_token: refresh_token )
+        render json: { access_token: response.access_token }
       else
         render json: {response: response}, status: :failed
       end
     end
    
     def refresh
+      byebug
       user = current_user
       response = user.refresh_token()
       if response["access_token"]
-        render json: { access_token : response["access_token"]}
+        render json: { access_token: response["access_token"]}
       else
         render json: {response: response}, status: :failed
       end
