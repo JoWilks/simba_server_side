@@ -28,15 +28,33 @@ class Api::V1::UsersController < ApplicationController
 
     def exchange
       user = current_user
-      response = user.exchange_token
-      byebug
-      render json: {response: response}
+      response = user.exchange_token(token_params)
+      #store access token & refresh token
+      if response["access_token"]
+        render json: { access_token : response["access_token"]}
+      else
+        render json: {response: response}, status: :failed
+      end
     end
    
+    def refresh
+      user = current_user
+      response = user.refresh_token()
+      if response["access_token"]
+        render json: { access_token : response["access_token"]}
+      else
+        render json: {response: response}, status: :failed
+      end
+    end
+
     private
    
     def user_params
       params.require(:user).permit(:username, :password)
+    end
+
+    def token_params
+      params.require(:exchange).permit(:auth_token)
     end
 
 
