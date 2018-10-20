@@ -37,7 +37,7 @@ class Api::V1::CategoriesController < ApplicationController
         categories = user.categories
         all_params[:budgetCat].each{|cat_name, amount| 
             curr_cat = categories.find_by_name(cat_name)
-            Category.update(curr_cat.id, budget_amount: amount, budget_timeframe: all_params[:timeframe] )
+            Category.update(curr_cat.id, budget_amount: amount, budget_timeframe: all_params[:timeFrame] )
         }
         render json: { budgetCat: categories }, status: :updated
 

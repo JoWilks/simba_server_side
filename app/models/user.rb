@@ -20,23 +20,22 @@ class User < ApplicationRecord
             state=#{state_token}"
         )
         data = JSON.parse(response)
-        console.log(data)
     end
 
     def exchange_token(auth_token)
-    let token = auth_token
-    response = RestClient::Request.execute(
+    RestClient::Request.execute(
         method: :post,
         url: "https://api.monzo.com/oauth2/token",
         payload: {  'grant_type': 'authorization_code', 
-                    'code': token,
                     'client_id': 'oauth2client_00009bXcTSHJgJqAJJ7L6X',
+                    'redirect_uri': 'https://zealous-kalam-8b6c52.netlify.com/',
                     'client_secret': 'mnzconf.Z8Xb0mhAD5Y3nSmenAa+IOnuSrMxJB758d9Dq/Q2+kWHPVv6Jwmrns9Ubw3zdaKhTgR4AauFYWDsIJ/bSqVU',
-                    'redirect_uri': 'https://zealous-kalam-8b6c52.netlify.com/'
+                    'code': auth_token,
                  }
-        )
-        data = JSON.parse(response)
-        
+        ){|response, request, result| 
+            data = JSON.parse(response)
+            return data
+        }
     end
 
     def refresh_token()
