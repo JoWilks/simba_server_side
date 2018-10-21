@@ -38,7 +38,7 @@ class User < ApplicationRecord
         }
     end
 
-    def refresh_token()
+    def send_refresh_token()
         refresh_token = JWT.decode(self.refresh_token, 'my_s3cr3t', true, algorithm: 'HS256') #get this from env file?
         response = RestClient::Request.execute(
             method: :post,
@@ -46,7 +46,7 @@ class User < ApplicationRecord
             payload: {  'grant_type': 'refresh_token', 
                         'client_id': 'oauth2client_00009bXcTSHJgJqAJJ7L6X',
                         'client_secret': 'mnzconf.Z8Xb0mhAD5Y3nSmenAa+IOnuSrMxJB758d9Dq/Q2+kWHPVv6Jwmrns9Ubw3zdaKhTgR4AauFYWDsIJ/bSqVU',
-                        'refresh_token': refresh_token
+                        'refresh_token': refresh_token[0]["response_token"]
                      }
             )
             data = JSON.parse(response)

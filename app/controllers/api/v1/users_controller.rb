@@ -20,12 +20,7 @@ class Api::V1::UsersController < ApplicationController
     def validate
       user = current_user
       if user
-          if user.access_token 
-            access_token = JWT.decode(user.access_token, 'my_s3cr3t', true, algorithm: 'HS256')
-            render json: { id: user.id, username: user.username, access_token: access_token }
-          else
-            render json: { id: user.id, username: user.username }
-          end
+          render json: { id: user.id, username: user.username }
       else
           render json: {error: 'Validation failed.', status: 400}
       end
@@ -46,7 +41,7 @@ class Api::V1::UsersController < ApplicationController
    
     def refresh
       user = current_user
-      response = user.refresh_token()
+      response = user.send_refresh_token()
       if response["access_token"]
         render json: { access_token: response["access_token"]}
       else
