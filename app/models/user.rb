@@ -23,23 +23,35 @@ class User < ApplicationRecord
     end
 
     def exchange_token(auth_token)
-    RestClient::Request.execute(
-        method: :post,
-        url: "https://api.monzo.com/oauth2/token",
-        payload: {  'grant_type': 'authorization_code', 
-                    'client_id': 'oauth2client_00009bXcTSHJgJqAJJ7L6X',
-                    'redirect_uri': 'https://zealous-kalam-8b6c52.netlify.com/',
-                    'client_secret': 'mnzconf.Z8Xb0mhAD5Y3nSmenAa+IOnuSrMxJB758d9Dq/Q2+kWHPVv6Jwmrns9Ubw3zdaKhTgR4AauFYWDsIJ/bSqVU',
-                    'code': auth_token,
-                 }
-        ){|response, request, result| 
-            data = JSON.parse(response)
-            return data
-        }
+        RestClient::Request.execute(
+            method: :post,
+            url: "https://api.monzo.com/oauth2/token",
+            payload: {  'grant_type': 'authorization_code', 
+                        'client_id': 'oauth2client_00009bXcTSHJgJqAJJ7L6X',
+                        'redirect_uri': 'https://zealous-kalam-8b6c52.netlify.com/',
+                        'client_secret': 'mnzconf.Z8Xb0mhAD5Y3nSmenAa+IOnuSrMxJB758d9Dq/Q2+kWHPVv6Jwmrns9Ubw3zdaKhTgR4AauFYWDsIJ/bSqVU',
+                        'code': auth_token,
+                    }
+            ){|response, request, result| 
+                data = JSON.parse(response)
+                return data
+            }
     end
 
-    def send_refresh_token()
-        refresh_token = JWT.decode(self.refresh_token, 'my_s3cr3t', true, algorithm: 'HS256') #get this from env file?
+    def check_access_token_valid
+        access_token = JWT.decode(self.refresh_token, 'my_s3cr3t', true, algorithm: 'HS256')
+        RestClient::Request.execute(
+            method: :get,
+            url: "https://api.monzo.com/ping/whoami",
+            headers: {'Authorization': "Bearer #{access_token}"}
+            ){|response, request, result| 
+                data = JSON.parse(response)
+                return data
+            }
+    end
+
+    def send_for_refresh_token
+        refresh_token = JWT.decode(self.refresh_token, 'my_s3cr3t', true, algorithm: 'HS256') #get secret from env file?
         response = RestClient::Request.execute(
             method: :post,
             url: "https://api.monzo.com/oauth2/token",
@@ -48,9 +60,11 @@ class User < ApplicationRecord
                         'client_secret': 'mnzconf.Z8Xb0mhAD5Y3nSmenAa+IOnuSrMxJB758d9Dq/Q2+kWHPVv6Jwmrns9Ubw3zdaKhTgR4AauFYWDsIJ/bSqVU',
                         'refresh_token': refresh_token[0]["response_token"]
                      }
-            )
+            ){|response, request, result|
+            byebug 
             data = JSON.parse(response)
-            
+            return data
+            }
         end
 
 end

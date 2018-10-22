@@ -41,7 +41,7 @@ class Api::V1::UsersController < ApplicationController
    
     def refresh
       user = current_user
-      response = user.send_refresh_token()
+      response = user.send_for_refresh_token
       if response["access_token"]
         render json: { access_token: response["access_token"]}
       else
