@@ -12,8 +12,9 @@ class Api::V1::AuthController < ApplicationController
           if @user.access_token
           #Check whether access_token still valid, if not send refresh for new one
           access_token_response = @user.check_access_token_valid
-              
+          
                 if access_token_response["authenticated"]
+                  
                   access_token = JWT.decode(@user.access_token, 'my_s3cr3t', true, algorithm: 'HS256')
                   render json: { user: UserSerializer.new(@user), jwt: token, access_token: access_token[0]["access_token"] }, status: :accepted
                 else 

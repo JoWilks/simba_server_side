@@ -39,11 +39,11 @@ class User < ApplicationRecord
     end
 
     def check_access_token_valid
-        access_token = JWT.decode(self.refresh_token, 'my_s3cr3t', true, algorithm: 'HS256')
+        access_token = JWT.decode(self.access_token, 'my_s3cr3t', true, algorithm: 'HS256')
         RestClient::Request.execute(
             method: :get,
             url: "https://api.monzo.com/ping/whoami",
-            headers: {'Authorization': "Bearer #{access_token}"}
+            headers: {'Authorization': "Bearer #{access_token[0]["access_token"]}"}
             ){|response, request, result| 
                 data = JSON.parse(response)
                 return data
