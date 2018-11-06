@@ -81,5 +81,5 @@ test:
 production:
   <<: *default
   database: SIMBA-App_production
-  username: SIMBA-App
+  username: Jo
   password: <%= ENV['SIMBA-APP_DATABASE_PASSWORD'] %>

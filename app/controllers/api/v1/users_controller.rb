@@ -30,8 +30,8 @@ class Api::V1::UsersController < ApplicationController
       user = current_user
       response = user.exchange_token(token_params["auth_token"])
       if response["access_token"]
-        access_token = JWT.encode({ access_token: response["access_token"] }, 'my_s3cr3t')
-        refresh_token = JWT.encode({ response_token: response["refresh_token"] }, 'my_s3cr3t')
+        access_token = JWT.encode({ access_token: response["access_token"] }, ENV['secret'])
+        refresh_token = JWT.encode({ response_token: response["refresh_token"] }, ENV['secret'])
         user.update( access_token: access_token, refresh_token: refresh_token )
         render json: { access_token: response["access_token"] }
       else

@@ -8,8 +8,12 @@ class Api::V1::AuthController < ApplicationController
         # encode token comes from ApplicationController
         token = encode_token({ user_id: @user.id })
         # auth_token = encode_token({ auth_token: @user.auth_token })
-        access_token = JWT.decode(@user.access_token, 'my_s3cr3t', true, algorithm: 'HS256')
-        render json: { user: UserSerializer.new(@user), jwt: token, access_token: access_token[0]["access_token"] }, status: :accepted
+        if (@user.access_token)
+          access_token = JWT.decode(@user.access_token, ENV['secret'], true, algorithm: 'HS256')
+          render json: { user: UserSerializer.new(@user), jwt: token, access_token: access_token[0]["access_token"] }, status: :accepted
+        else
+          render json: { user: UserSerializer.new(@user), jwt: token }, status: :accepted
+        end
       else
         render json: { message: 'Invalid username or password' }, status: :unauthorized
       end
